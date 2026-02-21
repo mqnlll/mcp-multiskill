@@ -12,11 +12,11 @@ def cal(a, b, operation):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A simple calculator.")
-    parser.add_argument("a", type=float, help="First number")
-    parser.add_argument("b", type=float, help="Second number")
-    parser.add_argument("operation", choices=["+", "-"], help="Operation to perform")
+    parser.add_argument("--a", type=float, help="First number")
+    parser.add_argument("--b", type=float, help="Second number")
+    parser.add_argument("--o", choices=["+", "-"], help="Operation to perform")
     if get_parser_json(parser):
         exit(0)
     
     args = parser.parse_args()
-    cal(args.a, args.b, args.operation)
+    cal(args.a, args.b, args.o)
