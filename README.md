@@ -51,7 +51,7 @@ uv add --editable ../../
 from mcp_multiskill.parser_to_schema import get_parser_json
 
 if get_parser_json(parser):
-		exit(0)
+	exit(0)
 ```
 
 ```bash
