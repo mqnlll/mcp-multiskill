@@ -1,6 +1,21 @@
 # mcp-multiskill
 
-一个面向多技能目录的 MCP Server。
+一个面向多技能的 MCP Server。
+
+## 安装
+```bash
+uv pip install -e .
+```
+
+## 启动
+```bash
+uv run python -m mcp_multiskill.server
+```
+
+## 给 MCP Client 的启动命令
+```bash
+uv run --project <mcp-multiskill的绝对路径> python -m mcp_multiskill.server
+```
 
 ## Skill 目录约定
 
@@ -39,7 +54,15 @@
 ```bash
 cd skills/<skill_name>/
 uv sync # 构建环境
+# 项目可能有别的安装方式, 如 pip install -e . 等, 此时请
+uv pip install -e .
+# 主要根据具体项目要求来, 能运行就行
+
 uv run python xxx.py # 测试运行
+# 目前只支持能在环境下能直接 python script.py 执行的脚本
+# 因为本人感觉简单的小工具项目会在根目录下直接放 main.py, demo.py 等
+# 也有放在 example/xxx.py 的, 此时请把所需脚本移出来
+# 更复杂些的情况, 如本项目用 python -m 来执行, 请用大模型帮助生成一个入口脚本
 ```
 4. 在该项目依赖中加入 MCP server 所需依赖 `mcp-multiskill`。
 ```bash
