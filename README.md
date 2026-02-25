@@ -4,6 +4,8 @@
 
 ## 安装
 ```bash
+pip install uv # if needed
+uv venv
 uv pip install -e .
 ```
 
@@ -14,7 +16,7 @@ uv run python -m mcp_multiskill.server
 
 ## 给 MCP Client 的启动命令
 ```bash
-uv run --project <mcp-multiskill的绝对路径> python -m mcp_multiskill.server
+uv run --project <mcp-multiskill的路径> python -m mcp_multiskill.server
 ```
 
 ## Skill 目录约定
