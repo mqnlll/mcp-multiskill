@@ -75,7 +75,7 @@ def _get_script_schema(script_path: Path, skill_dir: Path) -> Any:
 		"python",
 		str(script_path),
 	]
-	result = subprocess.run(command, capture_output=True, text=True, env=env)
+	result = subprocess.run(command, capture_output=True, text=True, env=env, stdin=subprocess.DEVNULL)
 	if result.returncode != 0:
 		raise RuntimeError(
 			f"Failed to extract parser schema from {script_path.name}: {result.stderr.strip()}"
@@ -110,6 +110,7 @@ def render_skill_for_client(skill_name: str, skills_root: Path | None = None) ->
 		lines.append(f"- skill_name: `{skill_name}`")
 		lines.append(f"- script_name: `{script.stem}`")
 		lines.append("- argv: list of CLI arguments")
+		lines.append("- stdin: optional text passed to process stdin")
 		lines.append("")
 		if schema is not None:
 			lines.append("Argument schema:")
@@ -139,6 +140,7 @@ def run_skill_script(
 	script_name: str,
 	argv: list[str] | None = None,
 	skills_root: Path | None = None,
+	stdin: str | None = None,
 ) -> dict[str, Any]:
 	skill_dir = get_skill_dir(skill_name, skills_root)
 	script_file = script_name if script_name.endswith(".py") else f"{script_name}.py"
@@ -155,7 +157,13 @@ def run_skill_script(
 		str(script_path),
 		*(argv or []),
 	]
-	result = subprocess.run(command, capture_output=True, text=True)
+	result = subprocess.run(
+		command,
+		capture_output=True,
+		text=True,
+		input=stdin,
+		stdin=subprocess.DEVNULL if stdin is None else None,
+	)
 	return {
 		"command": command,
 		"returncode": result.returncode,

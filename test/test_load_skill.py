@@ -156,12 +156,40 @@ class TestLoadSkill(unittest.TestCase):
             (skill_dir / "SKILL.md").write_text("desc", encoding="utf-8")
             (skill_dir / "main.py").write_text("", encoding="utf-8")
 
-            result = load_skill.run_skill_script("demo", "main", ["--x", "1"], root)
+            result = load_skill.run_skill_script("demo", "main", ["--x", "1"], skills_root=root)
 
             self.assertEqual(result["returncode"], 0)
             self.assertEqual(result["stdout"], "ok")
             self.assertIn("main.py", " ".join(result["command"]))
             self.assertIn("--x", result["command"])
+            mock_run.assert_called_once()
+            kwargs = mock_run.call_args.kwargs
+            self.assertEqual(kwargs["stdin"], load_skill.subprocess.DEVNULL)
+            self.assertIsNone(kwargs["input"])
+
+    @patch("mcp_multiskill.load_skill.subprocess.run")
+    def test_run_skill_script_passes_stdin_when_provided(self, mock_run) -> None:
+        mock_run.return_value = SimpleNamespace(returncode=0, stdout="ok", stderr="")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill_dir = root / "demo"
+            skill_dir.mkdir()
+            (skill_dir / "SKILL.md").write_text("desc", encoding="utf-8")
+            (skill_dir / "main.py").write_text("", encoding="utf-8")
+
+            load_skill.run_skill_script(
+                "demo",
+                "main",
+                ["--x", "1"],
+                skills_root=root,
+                stdin="hello stdin",
+            )
+
+            mock_run.assert_called_once()
+            kwargs = mock_run.call_args.kwargs
+            self.assertIsNone(kwargs["stdin"])
+            self.assertEqual(kwargs["input"], "hello stdin")
 
     def test_run_skill_script_raises_when_script_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -171,7 +199,7 @@ class TestLoadSkill(unittest.TestCase):
             (skill_dir / "SKILL.md").write_text("desc", encoding="utf-8")
 
             with self.assertRaisesRegex(ValueError, "Script not found"):
-                load_skill.run_skill_script("demo", "missing", [], root)
+                load_skill.run_skill_script("demo", "missing", [], skills_root=root)
 
 
 if __name__ == "__main__":

@@ -35,9 +35,19 @@ def get_skill(skill_name: str) -> str:
 
 
 @mcp.tool(name="run_skill")
-def run_skill(skill_name: str, script_name: str, argv: list[str] | None = None) -> dict:
-	"""Single entry tool for executing scripts in a skill through uv. You should call get_skill to check the details of the skill before calling this tool, as you need to provide the correct script_name and argv."""
-	return run_skill_script(skill_name=skill_name, script_name=script_name, argv=argv)
+def run_skill(
+	skill_name: str,
+	script_name: str,
+	argv: list[str] | None = None,
+	stdin: str | None = None,
+) -> dict:
+	"""Single entry tool for executing scripts in a skill through uv. You should call get_skill to check the details of the skill before calling this tool, as you need to provide the correct script_name, argv and optional stdin."""
+	return run_skill_script(
+		skill_name=skill_name,
+		script_name=script_name,
+		argv=argv,
+		stdin=stdin,
+	)
 
 
 if __name__ == "__main__":
