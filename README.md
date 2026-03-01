@@ -6,7 +6,7 @@
 ```bash
 pip install uv # if needed
 uv venv
-uv pip install -e .
+uv pip install -e ".[full]"
 ```
 
 ## 启动
@@ -68,7 +68,7 @@ uv run python xxx.py # 测试运行
 ```
 4. 在该项目依赖中加入 MCP server 所需依赖 `mcp-multiskill`。
 ```bash
-uv add --editable ../../
+uv add --editable "../..[skill-need]"
 ```
 5. 在 argparse 脚本中加入钩子：
 

@@ -365,16 +365,23 @@ cli = [
 name = "mcp-multiskill"
 version = "0.1.0"
 source = { virtual = "." }
-dependencies = [
+
+[package.optional-dependencies]
+full = [
     { name = "argparse-to-json" },
     { name = "mcp", extra = ["cli"] },
+]
+skill-need = [
+    { name = "argparse-to-json" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "argparse-to-json", specifier = ">=0.0.1" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.26.0" },
+    { name = "argparse-to-json", marker = "extra == 'full'", specifier = ">=0.0.1" },
+    { name = "argparse-to-json", marker = "extra == 'skill-need'", specifier = ">=0.0.1" },
+    { name = "mcp", extras = ["cli"], marker = "extra == 'full'", specifier = ">=1.26.0" },
 ]
+provides-extras = ["full", "skill-need"]
 
 [[package]]
 name = "mdurl"

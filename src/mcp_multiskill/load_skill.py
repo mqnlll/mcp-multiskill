@@ -100,18 +100,16 @@ def render_skill_for_client(skill_name: str, skills_root: Path | None = None) ->
 		lines.append("No runnable python scripts found in this skill.")
 		return "\n".join(lines)
 
-	lines.append("Use MCP tool `run_skill(skill_name, script_name, argv)` to execute a script.")
+	lines.append("Use MCP tool `run_skill` to execute a script.")
+	lines.append(f"- skill_name: `{skill_name}`")
+	# lines.append("- argv: list of CLI arguments")
+	# lines.append("- stdin: optional text passed to process stdin")
 	lines.append("")
 
 	for script in scripts:
 		schema = _get_script_schema(script, skill_dir)
 		lines.append(f"### {script.name}")
-		lines.append("")
-		lines.append(f"- skill_name: `{skill_name}`")
 		lines.append(f"- script_name: `{script.stem}`")
-		lines.append("- argv: list of CLI arguments")
-		lines.append("- stdin: optional text passed to process stdin")
-		lines.append("")
 		if schema is not None:
 			lines.append("Argument schema:")
 			lines.append("```json")
@@ -157,12 +155,17 @@ def run_skill_script(
 		str(script_path),
 		*(argv or []),
 	]
+
+	# 复制当前环境，移除 VIRTUAL_ENV
+	env = os.environ.copy()
+	env.pop("VIRTUAL_ENV", None)
 	result = subprocess.run(
 		command,
 		capture_output=True,
 		text=True,
 		input=stdin,
 		stdin=subprocess.DEVNULL if stdin is None else None,
+		env=env,
 	)
 	return {
 		"command": command,
